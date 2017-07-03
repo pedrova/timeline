@@ -44,6 +44,7 @@
             dataType: "jsonp"
         }).done(function(data) {
             var active = 'class="active"';
+            var hide = '';
 
             // get JSON contents and add on the page
             $.each(data.items, function (index, item) {
@@ -61,6 +62,11 @@
                     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
                     $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
                 });
+                $(".ddimage").append(
+                    '<span ' + hide + ' id="ddimage_' + index +
+                    '" style="background-image: url(' + item.cover_image + ')"></span>'
+                );
+                hide = 'class="hide"';
 
                 // Desktop/Tablet Navbar
                 $('.navbar-header').find("ul").append(

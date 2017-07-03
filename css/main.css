@@ -17,6 +17,21 @@ body {
 
 /* DROP DOWN */
 
+.ddimage {
+    display: none !important;
+    height: 100px;
+    width: 100%;
+}
+
+.ddimage span {
+    height: inherit;
+    width: inherit;
+    display: inline-block;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: 0;
+}
+
 .dropdown.visible {
     display: none !important;
 }
@@ -228,4 +243,29 @@ body {
     right: -15px;
     border-width: 8px 0 8px 16px;
     border-color: transparent transparent transparent #fff;
+}
+
+/* Mobile */
+@media only screen and (max-width : 480px) {
+    .timeline ul li {
+        position: relative;
+        left: -43%;
+    }
+    .timeline ul li:nth-child(odd) div {
+        left: 45px;
+    }
+    .timeline ul li:nth-child(odd) div::before {
+        left: -15px;
+        border-width: 8px 16px 8px 0;
+        border-color: transparent #fff transparent transparent;
+    }
+    .timeline ul li div {
+        width: 250px;
+    }
+    .timeline ul li div span.image {
+        height: 135px;
+    }
+    .ddimage {
+        display: block !important;
+    }
 }
