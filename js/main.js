@@ -47,8 +47,25 @@
 
             // get JSON contents and add on the page
             $.each(data.items, function (index, item) {
+                // Mobile Dropdown
+                $('.dropdown-menu').append(
+                    '<li id="dropdownli_' + index + '" role="presentation">' +
+                    '<a role="menuitem" tabindex="-1" href="#" data-value="' + item.channel.name + '">' +
+                    item.channel.name +
+                    '</a></li>'
+                );
+                if (index === 0) {
+                    $(".dropdown").find('.btn').html(item.channel.name + ' <span class="caret"></span>');
+                }
+                $("#dropdownli_" + index + " a").click(function() {
+                    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+                    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+                });
+
+                // Desktop/Tablet Navbar
                 $('.navbar-header').find("ul").append(
-                    '<li id="navli_' + index + '" ' + active + ' style="background-image: url(' + item.cover_image + ')"></li>'
+                    '<li id="navli_' + index + '" ' + active +
+                    ' style="background-image: url(' + item.cover_image + ')"></li>'
                 );
                 active = '';
                 $( "#navli_" + index).append(
