@@ -34,7 +34,7 @@
                 hide = 'class="hide"';
 
                 // Desktop/Tablet Navbar
-                $('.navbar-header').find("ul").append(
+                $('#navbar').find("ul").append(
                     '<li id="navli_' + index + '" ' + active +
                     ' style="background-image: url(' + item.cover_image + ')"></li>'
                 );
