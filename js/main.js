@@ -1,10 +1,73 @@
 (function() {
     $(function() {
-        var urlArticles = "https://zooom.no/api/v1/articles/havornreiret?limit=10&offset=0";
         var urlChannels = "https://zooom.no/api/v1/channels";
+        // Get Channels
+        $.get({
+            url: urlChannels,
+            dataType: "jsonp"
+        }).done(function(data) {
+            var active = 'class="active"';
+            var hide = '';
 
-        // Get Articles
-        // TODO: Add ajax on fail
+            // get JSON contents and add on the page
+            $.each(data.items, function (index, item) {
+                // Mobile Dropdown
+                $('.dropdown-menu').append(
+                    '<li id="dropdownli_' + index + '" role="presentation">' +
+                    '<a class="link" role="menuitem" tabindex="-1" href="#" data-value="' + item.channel.urlSafeName + '">' +
+                    item.channel.name +
+                    '</a></li>'
+                );
+                if (index === 0) {
+                    $(".dropdown").find('.btn').html(item.channel.name + ' <span class="caret"></span>');
+                }
+                $("#dropdownli_" + index + " a").click(function() {
+                    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+                    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+                });
+                $(".ddimage").append(
+                    '<span ' + hide + ' id="ddimage_' + item.channel.urlSafeName +
+                    '" style="background-image: url(' + item.cover_image + ')"></span>'
+                );
+                hide = 'class="hide"';
+
+                // Desktop/Tablet Navbar
+                $('.navbar-header').find("ul").append(
+                    '<li id="navli_' + index + '" ' + active +
+                    ' style="background-image: url(' + item.cover_image + ')"></li>'
+                );
+                active = '';
+                $( "#navli_" + index).append(
+                    '<a class="link" href="#" data-value="' + item.channel.urlSafeName + '" data-toggle="pill">' +
+                    item.channel.name + '</a>'
+                );
+                if (index > 1) {
+                    return false;
+                }
+            });
+        });
+
+        $("nav").on("click", ".link", function() {
+            var urlSafeName = $(this).data( "value" );
+            getArticles(urlSafeName, true);
+        });
+
+        $(".dropdown-menu").on("click", ".link", function() {
+            var urlSafeName = $(this).data( "value" );
+            $(".ddimage span").removeClass("show").addClass("hide");
+            $("#ddimage_" + urlSafeName).removeClass("hide").addClass("show");
+            getArticles(urlSafeName, true);
+        });
+
+        getArticles("havornreiret", false);
+    });
+
+    function getArticles(urlSafeName, empty) {
+        if (empty) {
+            $(".timeline ul").empty();
+        }
+        var urlArticles = "https://zooom.no/api/v1/articles/" + urlSafeName + "?limit=10&offset=0";
+
         $.get({
             url: urlArticles,
             dataType: "jsonp"
@@ -36,55 +99,5 @@
                 previousDate = displayDate;
             });
         });
-
-        // Get Channels
-        // TODO: Add ajax on fail
-        $.get({
-            url: urlChannels,
-            dataType: "jsonp"
-        }).done(function(data) {
-            var active = 'class="active"';
-            var hide = '';
-
-            // get JSON contents and add on the page
-            $.each(data.items, function (index, item) {
-                // Mobile Dropdown
-                $('.dropdown-menu').append(
-                    '<li id="dropdownli_' + index + '" role="presentation">' +
-                    '<a role="menuitem" tabindex="-1" href="#" data-value="' + item.channel.name + '">' +
-                    item.channel.name +
-                    '</a></li>'
-                );
-                if (index === 0) {
-                    $(".dropdown").find('.btn').html(item.channel.name + ' <span class="caret"></span>');
-                }
-                $("#dropdownli_" + index + " a").click(function() {
-                    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-                    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-                });
-                $(".ddimage").append(
-                    '<span ' + hide + ' id="ddimage_' + index +
-                    '" style="background-image: url(' + item.cover_image + ')"></span>'
-                );
-                hide = 'class="hide"';
-
-                // Desktop/Tablet Navbar
-                $('.navbar-header').find("ul").append(
-                    '<li id="navli_' + index + '" ' + active +
-                    ' style="background-image: url(' + item.cover_image + ')"></li>'
-                );
-                active = '';
-                $( "#navli_" + index).append(
-                    '<a class="link" href="#" data-toggle="pill">' + item.channel.name + '</a>'
-                );
-                if (index > 1) {
-                    return false;
-                }
-            });
-        });
-
-        $("nav").on("click", ".link", function() {
-            //console.log($( this ));
-        });
-    });
+    }
 })();
