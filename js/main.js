@@ -8,16 +8,18 @@
         }).done(function(data) {
             var active = 'class="active"';
             var hide = '';
+            var mobileHide = 'class="hide"';
 
             // get JSON contents and add on the page
             $.each(data.items, function (index, item) {
                 // Mobile Dropdown
                 $('.dropdown-menu').append(
-                    '<li id="dropdownli_' + index + '" role="presentation">' +
+                    '<li ' + mobileHide + ' id="dropdownli_' + index + '" role="presentation">' +
                     '<a class="link" role="menuitem" tabindex="-1" href="#" data-value="' + item.channel.urlSafeName + '">' +
                     item.channel.name +
                     '</a></li>'
                 );
+                mobileHide = '';
                 if (index === 0) {
                     $(".dropdown").find('.btn').html(item.channel.name + ' <span class="caret"></span>');
                 }
@@ -54,6 +56,8 @@
 
         $(".dropdown-menu").on("click", ".link", function() {
             var urlSafeName = $(this).data( "value" );
+            $(".dropdown-menu li").removeClass("hide");
+            $(this).parent().addClass("hide");
             $(".ddimage span").removeClass("show").addClass("hide");
             $("#ddimage_" + urlSafeName).removeClass("hide").addClass("show");
             getArticles(urlSafeName, true);
