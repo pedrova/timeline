@@ -51,7 +51,9 @@
 
         $("nav").on("click", ".link", function() {
             var urlSafeName = $(this).data( "value" );
-            getArticles(urlSafeName, true);
+            $("#channel").val(urlSafeName);
+            $("#offset").val(1);
+            getArticles(urlSafeName, true, 0);
         });
 
         $(".dropdown-menu").on("click", ".link", function() {
@@ -60,17 +62,31 @@
             $(this).parent().addClass("hide");
             $(".ddimage span").removeClass("show").addClass("hide");
             $("#ddimage_" + urlSafeName).removeClass("hide").addClass("show");
-            getArticles(urlSafeName, true);
+            $("#channel").val(urlSafeName);
+            $("#offset").val(1);
+            getArticles(urlSafeName, true, 0);
         });
 
-        getArticles("havornreiret", false);
+        getArticles("havornreiret", false, 0);
+
+        $(window).scroll(function() {
+            if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+                var urlSafeName = $("#channel").val();
+                var offset = parseInt($("#offset").val(), 10);
+                if (offset < 10) {
+                    // limit to 10 times the user can scroll to bottom and load more articles
+                    getArticles(urlSafeName, false, offset);
+                    $("#offset").val(offset+1);
+                }
+            }
+        });
     });
 
-    function getArticles(urlSafeName, empty) {
+    function getArticles(urlSafeName, empty, offset) {
         if (empty) {
             $(".timeline ul").empty();
         }
-        var urlArticles = "https://zooom.no/api/v1/articles/" + urlSafeName + "?limit=10&offset=0";
+        var urlArticles = "https://zooom.no/api/v1/articles/" + urlSafeName + "?limit=10&offset=" + offset;
 
         $.get({
             url: urlArticles,
@@ -84,7 +100,7 @@
             // get JSON contents and add on the page
             $.each(data.items, function(index, item) {
                 $('.timeline').find("ul").append(
-                    '<li id="li_' + index + '"><div>' +
+                    '<li id="li_' + offset + index + '"><div>' +
                     '<span class="image" style="background-image: url(' + item.cover_image + ')"></span>' +
                     '<span><h3>' + item.contents.title + '</h3></span>' +
                     '<span>' + item.contents.preamble + '</span>' +
@@ -96,10 +112,10 @@
 
                 // Add dates in li::after pseudo-element
                 if (displayDate === previousDate) {
-                    $("#li_" + index).addClass("samedate");
+                    $("#li_" + offset + index).addClass("samedate");
                     return true;
                 }
-                $("#li_" + index).attr('data-content', displayDate);
+                $("#li_" + offset + index).attr('data-content', displayDate);
                 previousDate = displayDate;
             });
         });
