@@ -229,6 +229,16 @@ body {
     background-repeat: no-repeat;
 }
 
+
+.timeline ul li div span h4 span.howlong {
+    display: inline-block;
+    font-size: 14px;
+    color: #c4c5c6;
+    font-weight: initial;
+    position: relative;
+    left: 5px;
+}
+
 .timeline ul li:nth-child(even) div {
     left: 45px;
 }

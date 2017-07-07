@@ -96,19 +96,52 @@
             var monthNames = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
             var displayDate = "";
             var previousDate = "";
+            var todaysDate = new Date();
+            var oneDayInMilliseconds = 1000 * 3600 * 24;
+            var oneHourInMilliseconds = 1000 * 3600;
+            var oneMinuteInMilliseconds = 1000 * 60;
+            var howLong = "";
 
             // get JSON contents and add on the page
             $.each(data.items, function(index, item) {
                 $('.timeline').find("ul").append(
                     '<li id="li_' + offset + index + '"><div>' +
                     '<span class="image" style="background-image: url(' + item.cover_image + ')"></span>' +
-                    '<span><h3>' + item.contents.title + '</h3></span>' +
+                    '<span><h4>' + item.contents.title + '<span class="howlong" id="howlong_'+ offset + index +'"></span></h4></span>' +
                     '<span>' + item.contents.preamble + '</span>' +
                     '</div></li>'
                 );
 
                 articleDate = new Date(item.meta.created);
                 displayDate = articleDate.getDate() + ' ' + monthNames[articleDate.getMonth()];
+
+                // check how long ago the article was written
+                var timeDiff = Math.abs(todaysDate.getTime() - articleDate.getTime());
+                var diffDays = Math.floor(timeDiff / oneDayInMilliseconds);
+                var diffHours = Math.floor(timeDiff / oneHourInMilliseconds);
+                var diffMinutes = Math.floor(timeDiff / oneMinuteInMilliseconds);
+
+                if (diffMinutes >= 60) {
+                    if (diffHours >= 24) {
+                        if (diffDays >= 1) {
+                            if (diffDays == 1) {
+                                howLong = diffDays + " dag siden";
+                            } else {
+                                howLong = diffDays + " dager siden";
+                            }
+                        }
+                    } else {
+                        if (diffHours == 1) {
+                            howLong = diffHours + " time";
+                        } else {
+                            howLong = diffHours + " timer";
+                        }
+                    }
+                } else {
+                    howLong = diffMinutes + " min";
+                }
+
+                $("#howlong_" + offset + index).text(howLong);
 
                 // Add dates in li::after pseudo-element
                 if (displayDate === previousDate) {
