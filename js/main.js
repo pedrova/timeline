@@ -117,7 +117,7 @@
 
                 // check how long ago the article was written
                 var timeDiff = Math.abs(todaysDate.getTime() - articleDate.getTime());
-                var diffDays = Math.floor(timeDiff / oneDayInMilliseconds);
+                var diffDays = Math.ceil(timeDiff / oneDayInMilliseconds);
                 var diffHours = Math.floor(timeDiff / oneHourInMilliseconds);
                 var diffMinutes = Math.floor(timeDiff / oneMinuteInMilliseconds);
 
